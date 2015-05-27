@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		311724CB1B15CF6F005D2EC4 /* BeaconManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311724CA1B15CF6F005D2EC4 /* BeaconManager.swift */; };
 		31F87AC61B14E15B001FE0E6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F87AC51B14E15B001FE0E6 /* AppDelegate.swift */; };
 		31F87AC81B14E15B001FE0E6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F87AC71B14E15B001FE0E6 /* ViewController.swift */; };
 		31F87ACB1B14E15B001FE0E6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 31F87AC91B14E15B001FE0E6 /* Main.storyboard */; };
@@ -26,6 +27,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		311724CA1B15CF6F005D2EC4 /* BeaconManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconManager.swift; sourceTree = "<group>"; };
 		31F87AC01B14E15B001FE0E6 /* RangeWhileMonitor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RangeWhileMonitor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		31F87AC41B14E15B001FE0E6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		31F87AC51B14E15B001FE0E6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -79,6 +81,7 @@
 			children = (
 				31F87AC51B14E15B001FE0E6 /* AppDelegate.swift */,
 				31F87AC71B14E15B001FE0E6 /* ViewController.swift */,
+				311724CA1B15CF6F005D2EC4 /* BeaconManager.swift */,
 				31F87AC91B14E15B001FE0E6 /* Main.storyboard */,
 				31F87ACC1B14E15B001FE0E6 /* Images.xcassets */,
 				31F87ACE1B14E15B001FE0E6 /* LaunchScreen.xib */,
@@ -213,6 +216,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				31F87AC81B14E15B001FE0E6 /* ViewController.swift in Sources */,
+				311724CB1B15CF6F005D2EC4 /* BeaconManager.swift in Sources */,
 				31F87AC61B14E15B001FE0E6 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -411,6 +415,7 @@
 				31F87AE11B14E15B001FE0E6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		31F87AE21B14E15B001FE0E6 /* Build configuration list for PBXNativeTarget "RangeWhileMonitorTests" */ = {
 			isa = XCConfigurationList;
@@ -419,6 +424,7 @@
 				31F87AE41B14E15B001FE0E6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

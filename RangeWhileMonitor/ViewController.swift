@@ -9,105 +9,51 @@
 import UIKit
 import CoreLocation
 
-class ViewController: UIViewController, CLLocationManagerDelegate {
+class ViewController: UIViewController {
     
-    var manager = CLLocationManager()
-    var currentRegions = Set<CLBeaconRegion>()
+    let beaconManager = BeaconManager()
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        manager.delegate = self
-        requestAlwaysAuthorization() // Shows an alert if authorization was determined earlier
         
-        if let uuid = NSUUID(UUIDString: "8492E75F-4FD6-469D-B132-043FE94921D8") {
-            let region = CLBeaconRegion(proximityUUID: uuid, identifier: uuid.UUIDString)
-            manager.startMonitoringForRegion(region)
-        }
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "didEnterRegions:", name: beaconManagerDidEnterRegionsNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "didExitRegions:", name: beaconManagerDidExitRegionsNotification, object: nil)
+        
+        beaconManager.uuids = [NSUUID(UUIDString: "8492E75F-4FD6-469D-B132-043FE94921D8"),
+                                NSUUID(UUIDString: "B9407F30-F5F8-466E-AFF9-25556B57FE6D")]
+        beaconManager.startMonitoring()
     }
     
-    // MARK: CLLocationManagerDelegate
-    func locationManager(manager: CLLocationManager!, didDetermineState state: CLRegionState, forRegion region: CLRegion!) {
-        if let region = region as? CLBeaconRegion {
-            switch state {
-            case .Inside:
-                manager.startRangingBeaconsInRegion(region)
-            case .Outside:
-                delay(1.0) {
-                    manager.stopRangingBeaconsInRegion(region)
-                }
-            case .Unknown:
-                break
+    func didEnterRegions(notification: NSNotification) {
+        if let regions = notification.userInfo?[beaconManagerUserInfoEnteredRegionsKey] as? Set<CLBeaconRegion> {
+            let title = "You entered a region!"
+            for region in regions {
+                let message = "\(region.proximityUUID.UUIDString) \(region.major) \(region.minor)"
+                presentLocalNotificationNow(title, message: message)
             }
-        }
-    }
-    
-    func locationManager(manager: CLLocationManager!, didRangeBeacons beacons: [AnyObject]!, inRegion region: CLBeaconRegion!) {
-        var latestRegions = Set<CLBeaconRegion>()
-        
-        // Create CLBeaconRegions from CLBeacons
-        if let beacons = beacons as? [CLBeacon] {
-            for beacon in beacons {
-                latestRegions.insert(regionFromBeacon(beacon))
-            }
-        }
-        
-        let enteredRegions = latestRegions.subtract(currentRegions)
-        let exitedRegions = currentRegions.subtract(latestRegions)
-        currentRegions = latestRegions
-        
-        if enteredRegions.count > 0 {
-            println("Entered")
-            println(enteredRegions)
-        }
-        
-        if exitedRegions.count > 0 {
-            println("Exited")
-            println(exitedRegions)
         }
     }
 
-    // MARK: ()
-    func regionFromBeacon(beacon: CLBeacon) -> CLBeaconRegion {
-        let major = CLBeaconMajorValue(beacon.major.integerValue)
-        let minor = CLBeaconMinorValue(beacon.minor.integerValue)
-        let identifier = "\(beacon.proximityUUID.UUIDString).\(major).\(minor)" // Used for "is equal" check in Sets
-        return CLBeaconRegion(proximityUUID: beacon.proximityUUID, major: major, minor: minor, identifier: identifier)
-    }
-    
-    func requestAlwaysAuthorization() {
-        switch CLLocationManager.authorizationStatus() {
-        case .AuthorizedAlways:
-            break
-        case .NotDetermined:
-            manager.requestAlwaysAuthorization()
-        case .AuthorizedWhenInUse, .Restricted, .Denied:
-            let alertController = UIAlertController(
-                title: "Background Location Access Disabled",
-                message: "In order to be notified about iBeacons near you, please open this app's settings and set location access to 'Always'.",
-                preferredStyle: .Alert)
-            
-            let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
-            alertController.addAction(cancelAction)
-            
-            let openAction = UIAlertAction(title: "Open Settings", style: .Default) { (action) in
-                if let url = NSURL(string:UIApplicationOpenSettingsURLString) {
-                    UIApplication.sharedApplication().openURL(url)
-                }
+    func didExitRegions(notification: NSNotification) {
+        if let regions = notification.userInfo?[beaconManagerUserInfoExitedRegionsKey] as? Set<CLBeaconRegion> {
+            let title = "You exited a region!"
+            for region in regions {
+                let message = "\(region.proximityUUID.UUIDString) \(region.major) \(region.minor)"
+                presentLocalNotificationNow(title, message: message)
             }
-            alertController.addAction(openAction)
-            
-            self.presentViewController(alertController, animated: true, completion: nil)
         }
     }
     
-    func delay(delay:Double, closure:()->()) {
-        dispatch_after(
-            dispatch_time(
-                DISPATCH_TIME_NOW,
-                Int64(delay * Double(NSEC_PER_SEC))
-            ),
-            dispatch_get_main_queue(), closure)
+    func presentLocalNotificationNow(title: String, message: String) {
+        let notification = UILocalNotification()
+        notification.alertBody = message
+        notification.alertTitle = title
+        
+        UIApplication.sharedApplication().presentLocalNotificationNow(notification)
     }
 }
 
